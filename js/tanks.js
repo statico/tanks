@@ -5,8 +5,8 @@ if (!window.Raphael)
 
 var CONSTANTS = {
   frame_rate: 20,  // ms.
-  turn_speed: 3,
-  move_speed: 3,
+  turn_speed: 5,
+  move_speed: 5,
 };
 
 var STAGE = {
