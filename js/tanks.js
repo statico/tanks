@@ -14,6 +14,7 @@ var STAGE = {
   rx: 0,
   ry: 0,
   padding: 100,  // pixels
+  in_drag: false,
 };
 
 var Actor = Class.extend({
@@ -109,6 +110,7 @@ $(document).ready(function() {
     old_rx = STAGE.rx;
     old_ry = STAGE.ry;
     body.addClass('dragging');
+    STAGE.in_drag = true;
   };
 
   var onDrag = function(dx, dy) {
@@ -118,6 +120,7 @@ $(document).ready(function() {
 
   var onDragFinish = function() {
     body.removeClass('dragging');
+    STAGE.in_drag = false;
   };
 
   bg.drag(onDrag, onDragStart, onDragFinish);
@@ -159,20 +162,38 @@ $(document).ready(function() {
       actor.step();
     });
 
-    var bb = player.el.getBBox();
-    var p = STAGE.padding;
+    if (!STAGE.in_drag) {
+      var bb = player.el.getBBox();
+      var p = STAGE.padding;
+      var newrx = STAGE.rx, newry = STAGE.ry;
 
-    if (bb.x < p) {
-      STAGE.rx += p;
-    }
-    if (bb.x > STAGE.paper.width - p) {
-      STAGE.rx -= p;
-    }
-    if (bb.y < p) {
-      STAGE.ry += p;
-    }
-    if (bb.y > STAGE.paper.height - p) {
-      STAGE.ry -= p;
+      if (bb.x < p) {
+        newrx += p;
+      }
+      if (bb.x > STAGE.paper.width - p) {
+        newrx -= p;
+      }
+      if (bb.y < p) {
+        newry += p;
+      }
+      if (bb.y > STAGE.paper.height - p) {
+        newry -= p;
+      }
+
+      if (newrx != STAGE.rx || newry != STAGE.ry) {
+        var steps = 15;
+        var dx = (newrx - STAGE.rx) / steps;
+        var dy = (newry - STAGE.ry) / steps;
+        var mover = function() {
+          STAGE.rx += dx;
+          STAGE.ry += dy;
+          if (steps > 0) {
+            steps--;
+            setTimeout(mover, 5);
+          }
+        };
+        mover();
+      }
     }
 
   });
