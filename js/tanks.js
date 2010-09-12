@@ -29,8 +29,7 @@ var Actor = Class.extend({
     this.el.translate(newx - this.oldx, newy - this.oldy);
     this.oldx = newx;
     this.oldy = newy;
-
-    // rotate
+    this.el.rotate(this.r, true);
   },
 
 });
@@ -122,10 +121,37 @@ $(document).ready(function() {
   var player = new Tank();
 
   var actors = [player, midpoint];
+
+  var keys = {};
+  body.keydown(function(e) {
+    keys[e.which] = true;
+  });
+  body.keyup(function(e) {
+    delete keys[e.which];
+  });
+
   var loop = new MainLoop(20, function() {
+
+    for (key in keys) {
+      switch (key) {
+        case '37':
+          player.r = (player.r - 3) % 360;
+          break;
+        case '39':
+          player.r = (player.r + 3) % 360;
+          break;
+        case '38':
+          var rad = Raphael.rad(player.r);
+          player.x += Math.sin(rad) * 3;
+          player.y -= Math.cos(rad) * 3;
+          break;
+      }
+    }
+
     _.each(actors, function(actor) {
       actor.step();
     });
+
   });
 
   loop.start();
