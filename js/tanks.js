@@ -13,6 +13,7 @@ var STAGE = {
   paper: null,
   rx: 0,
   ry: 0,
+  padding: 100,  // pixels
 };
 
 var Actor = Class.extend({
@@ -157,6 +158,22 @@ $(document).ready(function() {
     _.each(actors, function(actor) {
       actor.step();
     });
+
+    var bb = player.el.getBBox();
+    var p = STAGE.padding;
+
+    if (bb.x < p) {
+      STAGE.rx += p;
+    }
+    if (bb.x > STAGE.paper.width - p) {
+      STAGE.rx -= p;
+    }
+    if (bb.y < p) {
+      STAGE.ry += p;
+    }
+    if (bb.y > STAGE.paper.height - p) {
+      STAGE.ry -= p;
+    }
 
   });
 
