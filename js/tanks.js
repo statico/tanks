@@ -3,6 +3,12 @@ if (!window._) alert('`_` object missing. underscore.js is required.');
 if (!window.Raphael)
     alert('`Raphael` object missing. raphael.js is required.');
 
+var CONSTANTS = {
+  frame_rate: 20,  // ms.
+  turn_speed: 3,
+  move_speed: 3,
+};
+
 var STAGE = {
   paper: null,
   rx: 0,
@@ -130,20 +136,20 @@ $(document).ready(function() {
     delete keys[e.which];
   });
 
-  var loop = new MainLoop(20, function() {
+  var loop = new MainLoop(CONSTANTS.frame_rate, function() {
 
     for (key in keys) {
       switch (key) {
         case '37':
-          player.r = (player.r - 3) % 360;
+          player.r = (player.r - CONSTANTS.turn_speed) % 360;
           break;
         case '39':
-          player.r = (player.r + 3) % 360;
+          player.r = (player.r + CONSTANTS.turn_speed) % 360;
           break;
         case '38':
           var rad = Raphael.rad(player.r);
-          player.x += Math.sin(rad) * 3;
-          player.y -= Math.cos(rad) * 3;
+          player.x += Math.sin(rad) * CONSTANTS.move_speed;
+          player.y -= Math.cos(rad) * CONSTANTS.move_speed;
           break;
       }
     }
